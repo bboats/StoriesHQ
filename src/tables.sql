@@ -1,0 +1,162 @@
+CREATE TABLE CHARACTER(
+  IdCharacter SERIAL UNIQUE PRIMARY KEY,
+  CivilianName VARCHAR(50) NOT NULL,
+  LifeStatus BOOLEAN,
+  Age INTEGER NOT NULL,
+  Ethnicity VARCHAR(50) NOT NULL,
+  BaseUniverse VARCHAR(50),
+  City VARCHAR(50)
+  );
+  
+CREATE TABLE COMIC(
+  CodComic Serial UNIQUE PRIMARY KEY,
+  ComicName VARCHAR(50),
+  ReleaseDate DATE,
+  QtChapters INTEGER,
+  StatusComic BOOLEAN
+  );
+  
+CREATE TABLE PARTICIPATION(
+  CodComic Serial NOT NULL,
+  IdCharacter Serial NOT NULL,
+  isMain Boolean NOT NULL,
+  FOREIGN KEY (CodComic) REFERENCES COMIC(CodComic),
+  FOREIGN KEY (IdCharacter) REFERENCES CHARACTER(IdCharacter)
+  );
+  
+CREATE TABLE POWER_SKILL(
+  IdSkill Serial UNIQUE PRIMARY KEY,
+  SkillName VARCHAR(50) NOT NULL,
+  Origin CHAR(1) NOT NULL
+  );
+
+CREATE TABLE TEAM(
+  TeamName VARCHAR(50) UNIQUE PRIMARY KEY,
+  isActive BOOLEAN,
+  Local_Worldwide CHAR(1)
+  );
+  
+CREATE TABLE ALTER_EGO(
+  Name VARCHAR(50) UNIQUE NOT NULL,
+  Occupation CHAR(1) NOT NULL,
+  isLegacy BOOLEAN
+  );
+  
+CREATE TABLE BELONGING_TEAM(
+  isCurrentlyIn BOOLEAN NOT NULL,
+  Name VARCHAR(50) NOT NULL,
+  TeamName VARCHAR(50) NOT NULL,
+  FOREIGN KEY (TeamName) REFERENCES TEAM(TeamName),
+  FOREIGN KEY (Name) REFERENCES ALTER_EGO(Name)
+  );
+  
+CREATE TABLE CREATOR(
+  CodCreator Serial UNIQUE PRIMARY KEY,
+  CreatorName VARCHAR(50),
+  Type CHAR(1)
+  );
+
+CREATE TABLE MEDIA(
+  CodMedia Serial UNIQUE PRIMARY KEY,
+  MediaName VARCHAR(50) NOT NULL,
+  ReleaseDate DATE NOT NULL
+  );
+  
+CREATE TABLE GAME(
+  CodMedia Serial NOT NULL,
+  MediaName VARCHAR(50) NOT NULL,
+  ReleaseDate DATE NOT NULL,
+  Console VARCHAR(50) NOT NULL,
+  FOREIGN KEY (CodMedia) REFERENCES MEDIA(CodMedia)
+  );
+  
+CREATE TABLE SERIES(
+  CodMedia Serial NOT NULL,
+  MediaName VARCHAR(50) NOT NULL,
+  ReleaseDate DATE NOT NULL,
+  QtEpisodes INT NOT NULL,
+  StatusSeries BOOLEAN NOT NULL,
+  FOREIGN KEY (CodMedia) REFERENCES MEDIA(CodMedia)
+  );
+  
+CREATE TABLE MOVIE(
+  CodMedia Serial NOT NULL,
+  MediaName VARCHAR(50) NOT NULL,
+  ReleaseDate DATE NOT NULL,
+  FOREIGN KEY (CodMedia) REFERENCES MEDIA(CodMedia)
+  );
+  
+CREATE TABLE ACTOR(
+  CodActor Serial UNIQUE PRIMARY KEY,
+  Name VARCHAR(50),
+  isVoiceActor BOOLEAN
+  );
+  
+CREATE TABLE PERSONA(
+  AlterEgoName VARCHAR(50) NOT NULL,
+  IdCharacter Serial NOT NULL,
+  FOREIGN KEY (AlterEgoName) REFERENCES ALTER_EGO(Name),
+  FOREIGN KEY (IdCharacter) REFERENCES CHARACTER(IdCharacter)
+);
+
+CREATE TABLE POSSESSION(
+  AlterEgoName VARCHAR(50) NOT NULL,
+  IdSkill Serial NOT NULL,
+  FOREIGN KEY (AlterEgoName) REFERENCES ALTER_EGO(Name),
+  FOREIGN KEY (IdSkill) REFERENCES POWER_SKILL(IdSkill)
+  );
+
+CREATE TABLE INTERACTION(
+  IdCharacter1 Serial NOT NULL,
+  IdCharacter2 Serial NOT NULL,
+  Relationship VARCHAR(3) NOT NULL,
+  FOREIGN KEY (IdCharacter1) REFERENCES CHARACTER(IdCharacter),
+  FOREIGN KEY (IdCharacter2) REFERENCES CHARACTER(IdCharacter)
+  );
+  
+CREATE TABLE WRITING(
+  CodComic Serial NOT NULL,
+  CodCreator Serial NOT NULL,
+  FOREIGN KEY (CodComic) REFERENCES COMIC(CodComic),
+  FOREIGN KEY (CodCreator) REFERENCES CREATOR(CodCreator)
+  );
+
+CREATE TABLE PUBLISHER(
+  CodPublisher Serial UNIQUE PRIMARY KEY,
+  PublisherName VARCHAR(50),
+  StatusPublisher BOOLEAN
+  );
+  
+CREATE TABLE PUBLICATION(
+  CodComic Serial NOT NULL,
+  CodPublisher Serial NOT NULL,
+  FOREIGN KEY (CodComic) REFERENCES COMIC(CodComic),
+  FOREIGN KEY (CodPublisher) REFERENCES PUBLISHER(CodPublisher)
+  );
+
+CREATE TABLE ALT_MEDIA(
+  IdCharacter Serial NOT NULL,
+  CodMedia Serial NOT NULL,
+  FOREIGN KEY (IdCharacter) REFERENCES CHARACTER(IdCharacter),
+  FOREIGN KEY (CodMedia) REFERENCES MEDIA(CodMedia)
+  );
+
+CREATE TABLE SERIES_ROLE(
+  CodMedia Serial NOT NULL,
+  CodActor Serial NOT NULL,
+  IdCharacter Serial NOT NULL,
+  CharacterName VARCHAR(50) NOT NULL,
+  FOREIGN KEY (CodMedia) REFERENCES MEDIA(CodMedia),
+  FOREIGN KEY (CodActor) REFERENCES ACTOR(CodActor),
+  FOREIGN KEY (IdCharacter) REFERENCES CHARACTER(IdCharacter)
+  );
+  
+CREATE TABLE MOVIE_ROLE(
+  CodMedia Serial NOT NULL,
+  CodActor Serial NOT NULL,
+  IdCharacter Serial NOT NULL,
+  CharacterName VARCHAR(50) NOT NULL,
+  FOREIGN KEY (CodMedia) REFERENCES MEDIA(CodMedia),
+  FOREIGN KEY (CodActor) REFERENCES ACTOR(CodActor),
+  FOREIGN KEY (IdCharacter) REFERENCES CHARACTER(IdCharacter)
+  );
